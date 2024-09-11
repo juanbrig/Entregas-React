@@ -1,3 +1,5 @@
+import React from "react";
+import Counter from "../ItemCount1/ItemCount1";
 const ItemListContainer = ({ greeting }) => {
 return (
     <div
@@ -13,6 +15,7 @@ return (
     }}
     >
     {greeting}
+    <Counter />
     </div>
 );
 };
