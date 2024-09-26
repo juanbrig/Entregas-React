@@ -7,7 +7,7 @@ const App = () => {
   return (
     <ChakraProvider>
       <MainLayout>
-      <Home/>
+        <Home />
       </MainLayout>
     </ChakraProvider>
   );
