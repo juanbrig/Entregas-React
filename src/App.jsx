@@ -1,7 +1,7 @@
 import React from "react";
 import { ChakraProvider } from "@chakra-ui/react";
-import MainLayout from "./layouts/MainLayout";
-import Home from "./pages/Home";
+import { MainLayout } from "./layouts/MainLayout";
+import { Home } from "./pages/Home";
 
 const App = () => {
   return (
