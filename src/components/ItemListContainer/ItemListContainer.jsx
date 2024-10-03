@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Heading,
@@ -10,18 +11,67 @@ import {
   HStack,
   Grid,
   GridItem,
+  Input,
+  Select,
 } from '@chakra-ui/react';
 import { BsArrowUpRight, BsStarFill, BsStarHalf, BsStar } from 'react-icons/bs';
+import { useItems } from '../../hooks';
+import { Loader } from '../Loader/Loader';
 
-export const ItemListContainer = ({ products }) => {
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+export const ItemListContainer = ({ productsData, loading }) => {
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+
+  const boxShadowColor = useColorModeValue("6px 6px 0 black", "6px 6px 0 cyan");
+
+  const categories = useMemo(() => {
+    const uniqueCategories = [...new Set(productsData.map(product => product.category))];
+    return uniqueCategories.sort();
+  }, [productsData]);
+
+  const filteredProducts = useMemo(() => {
+    return productsData.filter(product => 
+      product.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (selectedCategory === '' || product.category === selectedCategory)
+    );
+  }, [productsData, searchTerm, selectedCategory]);
+
+  const handleViewMore = (itemId) => {
+    navigate(`/item/${itemId}`);
+  };
+
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <Box>
+      <Flex mb={4} gap={4}>
+        <Input 
+          placeholder="Buscar productos..." 
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <Select 
+          placeholder="Filtrar por categoría" 
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {capitalizeFirstLetter(category)}
+            </option>
+          ))}
+        </Select>
+      </Flex>
       <Grid templateColumns="repeat(5, 1fr)" gap={4}>
-        {products.map((item) => {
+        {filteredProducts.map((item) => {
           const fullStars = Math.floor(item.rating);
           const hasHalfStar = item.rating % 1 !== 0; 
           const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0); 
-
           return (
             <GridItem key={item.id}>
               <Center py={6}>
@@ -34,7 +84,7 @@ export const ItemListContainer = ({ products }) => {
                   bg="white"
                   border={"1px"}
                   borderColor="black"
-                  boxShadow={useColorModeValue("6px 6px 0 black", "6px 6px 0 cyan")}
+                  boxShadow={boxShadowColor}
                 >
                   <Box h={"full"}>
                     <Img
@@ -43,7 +93,7 @@ export const ItemListContainer = ({ products }) => {
                       objectFit="cover"
                       h="full"
                       w="full"
-                      alt={"Blog Image"}
+                      alt={"Product Image"}
                     />
                   </Box>
                   <Box p={4}>
@@ -86,6 +136,7 @@ export const ItemListContainer = ({ products }) => {
                       roundedBottom={"sm"}
                       cursor={"pointer"}
                       w="full"
+                      onClick={() => handleViewMore(item.id)}
                     >
                       <Text fontSize={"md"} fontWeight={"semibold"}>
                         View more
