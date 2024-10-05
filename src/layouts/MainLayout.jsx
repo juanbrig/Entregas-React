@@ -5,7 +5,7 @@ export const MainLayout = ({ children }) => {
   return (
     <Box>
       <NavBar />
-      <Box> {/* Añadimos padding-top para evitar que el contenido se oculte detrás del NavBar */}
+      <Box>
         {children}
       </Box>
       <Box>Footer</Box>
