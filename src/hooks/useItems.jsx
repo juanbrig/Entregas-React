@@ -1,21 +1,21 @@
 import { useState, useEffect } from 'react';
-import { getAllProducts } from '../services/products.service';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebase'; // Reemplaza con la ruta correcta de tu archivo de configuración de Firebase
 
 export const useItems = () => {
   const [productsData, setProductsData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getAllProducts()
-      .then((res) => {
-        setProductsData(res.data.products);
+    const itemCollection = collection(db, 'products');
+
+    getDocs(itemCollection)
+      .then((snapshot) => {
+        const products = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setProductsData(products);
       })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      .catch((error) => console.log('Error fetching products:', error))
+      .finally(() => setLoading(false));
   }, []);
 
   return { productsData, loading };

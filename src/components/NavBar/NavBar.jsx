@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { CartWidget } from '../CartWidget/CartWidget';
+import { createProductsFirestore } from '../../helpers';
 
 export const NavBar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -64,6 +65,7 @@ export const NavBar = () => {
                   <MenuItem>Logout</MenuItem>
                 </MenuList>
               </Menu>
+              <Button onClick={() => {createProductsFirestore()}} > </Button>
             </Stack>
           </Flex>
         </Flex>
